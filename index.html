@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cadastro com LocalStorage</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    padding: 30px;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .container {
+    background: #fff;
+    padding: 20px 50px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+  }
+
+  .botoes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  button {
+    padding: 12px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  #salvar {
+    background-color: #4CAF50;
+    color: white;
+  }
+
+  #salvar:hover {
+    background-color: #3e8e41;
+  }
+
+  #limpar {
+    background-color: #f44336;
+    color: white;
+  }
+
+  #limpar:hover {
+    background-color: #c62828;
+  }
+
+  #resultado {
+    margin-top: 20px;
+    background: #f1f1f1;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Cadastro</h2>
+    <input type="text" id="nomeUsuario" placeholder="Digite seu nome" />
+    <input type="text" id="sobrenomeUsuario" placeholder="Digite seu sobrenome" />
+    <button id="salvar">Salvar</button>
+    <button id="limpar">Limpar Dados</button>
+
+    <div id="resultado"></div>
+  </div>
+
+ <script>
+function mostrarResultado(usuario) {
+  const resultado = document.getElementById("resultado");
+  resultado.innerText = `Olá, ${usuario.nome} ${usuario.sobrenome}! Seja bem-vindo.`;
+  resultado.style.color = "green";
+}
+
+function mostrarErro(nome, sobrenome) {
+  const resultado = document.getElementById("resultado");
+  resultado.innerText = `Nome "${nome} ${sobrenome}" inválido. Tente novamente!`;
+  resultado.style.color = "red";
+}
+
+document.getElementById("salvar").addEventListener("click", function () {
+  const nome = document.getElementById("nomeUsuario").value.trim();
+  const sobrenome = document.getElementById("sobrenomeUsuario").value.trim();
+
+  const nomeValido = nome !== "" && isNaN(nome);
+  const sobrenomeValido = sobrenome !== "" && isNaN(sobrenome);
+
+  if (!nomeValido || !sobrenomeValido) {
+    mostrarErro(nome, sobrenome);
+    return;
+  }
+
+  const usuario = {
+    nome: nome,
+    sobrenome: sobrenome
+  };
+
+  localStorage.setItem("usuario", JSON.stringify(usuario));
+  mostrarResultado(usuario);
+
+  // Limpa os campos
+  document.getElementById("nomeUsuario").value = "";
+  document.getElementById("sobrenomeUsuario").value = "";
+});
+
+document.getElementById("limpar").addEventListener("click", function () {
+  localStorage.removeItem("usuario");
+  document.getElementById("resultado").innerText = "Dados apagados.";
+  document.getElementById("resultado").style.color = "gray";
+});
+
+window.addEventListener("load", function () {
+  const usuarioSalvo = localStorage.getItem("usuario");
+  if (usuarioSalvo) {
+    const usuario = JSON.parse(usuarioSalvo);
+    mostrarResultado(usuario);
+  }
+});
+ </script>
+
+</body>
+</html>
